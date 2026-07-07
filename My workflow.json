@@ -1,0 +1,185 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3ca60466-47f0-49b9-bbcf-b4f3003f3342",
+              "name": "name",
+              "value": "Raaga",
+              "type": "string"
+            },
+            {
+              "id": "b9aa4146-3306-41a4-a98a-7a329250d701",
+              "name": "course",
+              "value": "AI",
+              "type": "string"
+            },
+            {
+              "id": "a68f39a2-8ad8-499f-bfba-5fd8f4172862",
+              "name": "year",
+              "value": "2",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "491b4fa4-9f90-4936-bfcb-0fadf341cf5c",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "357ca642-664f-47f0-a668-ff030da3a777",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "95acdc8e-22fb-4c6b-9871-dad0264aabee",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "student-registration",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        32,
+        -128
+      ],
+      "id": "e774bba9-d9bc-4fa1-9c89-a720dc90b0c8",
+      "name": "Webhook",
+      "webhookId": "dd17e86d-ac6c-4602-80f4-3abb1059df54"
+    },
+    {
+      "parameters": {
+        "tableId": "students",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "name",
+              "fieldValue": "={{$json.name}}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        832,
+        0
+      ],
+      "id": "529c7697-f16b-4e33-b772-13cac1bebe12",
+      "name": "Create a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "0YsIpXwmaE86TdWU",
+          "name": "Supabase account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        32,
+        0
+      ],
+      "id": "9dfe2c49-f9d9-42bc-a2dc-d6cfec1a806f",
+      "name": "When clicking ‘Execute workflow’"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        []
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "a186881a-b816-4451-85d5-c9d1d3d11345",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9defbe10a92870c55f0d93873a80e46bca6e22cae8fcedc5aa4d9ad5b7a6968a"
+  },
+  "nodeGroups": [],
+  "id": "x1NI2rN3fcbsOoPg",
+  "tags": []
+}

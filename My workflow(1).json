@@ -1,0 +1,137 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  return {\n    json: {\n      name: item.json.body.name,\n      course: item.json.body.course,\n      year: Number(item.json.body.year),\n      registration_date: new Date().toISOString()\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        0
+      ],
+      "id": "357ca642-664f-47f0-a668-ff030da3a777",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "tableId": "students",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "name",
+              "fieldValue": "={{$json.name}}"
+            },
+            {
+              "fieldId": "course",
+              "fieldValue": "={{$json.course}}"
+            },
+            {
+              "fieldId": "=year",
+              "fieldValue": "={{$json.year}}"
+            },
+            {
+              "fieldId": "registration_date",
+              "fieldValue": "={{$json.currentDate}}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        336,
+        0
+      ],
+      "id": "529c7697-f16b-4e33-b772-13cac1bebe12",
+      "name": "Create a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "0YsIpXwmaE86TdWU",
+          "name": "Supabase account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        528,
+        0
+      ],
+      "id": "604f6102-b9ba-46a7-ae6b-e2fe475a3320",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "student-registration",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "803ce9f4-e893-4c07-9ffa-f9ef45764c92",
+      "name": "Webhook",
+      "webhookId": "efc37c9f-760c-4638-93c4-efee10ddd4ee"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a row": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "ce491d6d-19b4-4b83-b28a-9d80d7f5aea7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9defbe10a92870c55f0d93873a80e46bca6e22cae8fcedc5aa4d9ad5b7a6968a"
+  },
+  "nodeGroups": [],
+  "id": "x1NI2rN3fcbsOoPg",
+  "tags": []
+}

@@ -1,53 +1,52 @@
-const form = document.getElementById("studentForm");
-const message = document.getElementById("message");
+async function registerStudent() {
 
-form.addEventListener("submit", async function (event) {
-
-    // Prevent page refresh
-    event.preventDefault();
-
-    // Read input values
+    // Get values from the form
     const name = document.getElementById("name").value;
     const course = document.getElementById("course").value;
     const year = Number(document.getElementById("year").value);
 
-    // Create JSON object
-    const student = {
-        name: name,
-        course: course,
-        year: year
-    };
+    // Basic validation
+    if (!name || !course || !year) {
+        document.getElementById("message").innerHTML =
+            "Please fill all fields.";
+        return;
+    }
 
     try {
 
-        const response = await fetch("YOUR_WEBHOOK_URL", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(student)
-        });
+        const response = await fetch(
+            "https://ram09.app.n8n.cloud/webhook/student-registration",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: name,
+                    course: course,
+                    year: year
+                })
+            }
+        );
 
-        const data = await response.json();
+        const result = await response.json();
 
-        if (response.ok) {
-            message.style.color = "green";
-            message.textContent = data.message || "Student Registered Successfully!";
+        console.log(result);
 
-            // Clear the form
-            form.reset();
+        document.getElementById("message").innerHTML =
+            "✅ Registration Successful!";
 
-        } else {
-            message.style.color = "red";
-            message.textContent = "Registration Failed!";
-        }
+        // Clear the form
+        document.getElementById("name").value = "";
+        document.getElementById("course").value = "";
+        document.getElementById("year").value = "";
 
     } catch (error) {
 
-        message.style.color = "red";
-        message.textContent = "Unable to connect to the server.";
-
         console.error(error);
-    }
 
-});
+        document.getElementById("message").innerHTML =
+            "❌ Registration Failed.";
+
+    }
+}
